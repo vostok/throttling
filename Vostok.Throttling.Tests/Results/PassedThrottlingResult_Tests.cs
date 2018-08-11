@@ -8,14 +8,14 @@ namespace Vostok.Throttling.Tests.Results
     [TestFixture]
     internal class PassedThrottlingResult_Tests
     {
-        private FuzzyLifoSemaphore semaphore;
+        private LockFreeLifoSemaphore semaphore;
         private AtomicInt consumerCounter;
         private AtomicInt priorityCounter;
 
         [SetUp]
         public void TestSetup()
         {
-            semaphore = new FuzzyLifoSemaphore(1);
+            semaphore = new LockFreeLifoSemaphore(1);
             consumerCounter = new AtomicInt(3);
             priorityCounter = new AtomicInt(4);
         }

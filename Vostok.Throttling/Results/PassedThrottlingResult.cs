@@ -6,7 +6,7 @@ namespace Vostok.Throttling.Results
 {
     internal class PassedThrottlingResult : IThrottlingResult
     {
-        public PassedThrottlingResult(FuzzyLifoSemaphore semaphore, AtomicInt[] counters, TimeSpan elapsed)
+        public PassedThrottlingResult(LockFreeLifoSemaphore semaphore, AtomicInt[] counters, TimeSpan elapsed)
         {
             this.semaphore = semaphore;
             this.counters = counters;
@@ -32,7 +32,7 @@ namespace Vostok.Throttling.Results
 
         public TimeSpan WaitTime { get; }
 
-        private FuzzyLifoSemaphore semaphore;
+        private LockFreeLifoSemaphore semaphore;
         private AtomicInt[] counters;
     }
 }

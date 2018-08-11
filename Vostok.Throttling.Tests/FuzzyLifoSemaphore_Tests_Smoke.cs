@@ -177,7 +177,7 @@ namespace Vostok.Throttling.Tests
 
         private static void PerformSmokeTest(int capacity, int parallelism, TimeSpan duration, Action payload)
         {
-            var semaphore = new FuzzyLifoSemaphore(capacity);
+            var semaphore = new LockFreeLifoSemaphore(capacity);
 
             var tasks = new List<Task>();
 

@@ -6,12 +6,12 @@ namespace Vostok.Throttling.Tests
     [TestFixture]
     internal class FuzzyLifoSemaphore_Tests
     {
-        private FuzzyLifoSemaphore semaphore;
+        private LockFreeLifoSemaphore semaphore;
 
         [SetUp]
         public void TestSetup()
         {
-            semaphore = new FuzzyLifoSemaphore(3);
+            semaphore = new LockFreeLifoSemaphore(3);
         }
 
         [Test]
