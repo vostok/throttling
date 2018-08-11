@@ -82,7 +82,7 @@ namespace Vostok.Throttling
             }
         }
 
-        private static async Task DrainSemaphore(FuzzyLifoSemaphore semaphore, int amount)
+        private static async Task DrainSemaphore(LockFreeLifoSemaphore semaphore, int amount)
         {
             for (int i = 0; i < amount; i++)
             {

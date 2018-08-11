@@ -11,7 +11,7 @@ namespace Vostok.Throttling
     internal class ThrottlingState
     {
         [NotNull]
-        public readonly FuzzyLifoSemaphore Semaphore = new FuzzyLifoSemaphore(0);
+        public readonly LockFreeLifoSemaphore Semaphore = new LockFreeLifoSemaphore(0);
 
         [NotNull]
         public readonly Dictionary<ThrottlingPriority, AtomicInt> PriorityCounters = Enum

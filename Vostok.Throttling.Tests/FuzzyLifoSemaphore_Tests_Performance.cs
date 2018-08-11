@@ -89,7 +89,7 @@ namespace Vostok.Throttling.Tests
             var fuzzyTimes = new List<double>();
 
             var slimSemaphore = new SemaphoreSlim(capacity, capacity);
-            var fuzzySemaphore = new FuzzyLifoSemaphore(capacity);
+            var fuzzySemaphore = new LockFreeLifoSemaphore(capacity);
 
             for (int i = 0; i < 5; i++)
             {

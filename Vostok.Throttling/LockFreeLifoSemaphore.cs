@@ -9,7 +9,7 @@ using Waiter = System.Threading.Tasks.TaskCompletionSource<bool>;
 
 namespace Vostok.Throttling
 {
-    internal class FuzzyLifoSemaphore
+    internal class LockFreeLifoSemaphore
     {
         private static readonly Task CompletedTask = Task.FromResult(true);
 
@@ -19,7 +19,7 @@ namespace Vostok.Throttling
         private readonly WaitCallback signalDeferredWaitersCallback;
         private volatile int currentCount;
 
-        public FuzzyLifoSemaphore(int initialCount)
+        public LockFreeLifoSemaphore(int initialCount)
         {
             if (initialCount < 0)
                 throw new ArgumentOutOfRangeException(nameof(initialCount), $"Initial count must not be negative, but was '{initialCount}'.");
@@ -54,9 +54,9 @@ namespace Vostok.Throttling
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Release()
         {
-            // (iloktionov): Åñëè ìû óâåëè÷èëè îòðèöàòåëüíûé count, òî èç ýòîãî ñëåäóåò îäíî èç äâóõ: 
-            // (iloktionov): 1. Â ñòåêå óæå åñòü waiter, êîòîðîãî ìîæíî ðàçáëîêèðîâàòü. 
-            // (iloktionov): 2. Â ñòåêå ñêîðî ïîÿâèòñÿ waiter, êîòîðîãî ìîæíî ðàçáëîêèðîâàòü (ãîíêà ñ WaitAsync). 
+            // (iloktionov): Если мы увеличили отрицательный count, то из этого следует одно из двух: 
+            // (iloktionov): 1. В стеке уже есть waiter, которого можно разблокировать. 
+            // (iloktionov): 2. В стеке скоро появится waiter, которого можно разблокировать (гонка с WaitAsync). 
             var countBeforeRelease = Interlocked.Increment(ref currentCount) - 1;
             if (countBeforeRelease < 0)
             {

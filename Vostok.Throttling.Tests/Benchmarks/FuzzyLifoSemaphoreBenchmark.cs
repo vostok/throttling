@@ -6,12 +6,12 @@ namespace Vostok.Throttling.Tests.Benchmarks
     public class FuzzyLifoSemaphoreBenchmark
     {
         private readonly SemaphoreSlim slimSemaphore;
-        private readonly FuzzyLifoSemaphore fuzzySemaphore;
+        private readonly LockFreeLifoSemaphore lockFreeSemaphore;
 
         public FuzzyLifoSemaphoreBenchmark()
         {
             slimSemaphore = new SemaphoreSlim(50, 50);
-            fuzzySemaphore = new FuzzyLifoSemaphore(50);
+            lockFreeSemaphore = new LockFreeLifoSemaphore(50);
         }
 
         [Benchmark]
@@ -24,8 +24,8 @@ namespace Vostok.Throttling.Tests.Benchmarks
         [Benchmark]
         public void Fuzzy()
         {
-            fuzzySemaphore.WaitAsync().GetAwaiter().GetResult();
-            fuzzySemaphore.Release();
+            lockFreeSemaphore.WaitAsync().GetAwaiter().GetResult();
+            lockFreeSemaphore.Release();
         }
     }
 }
