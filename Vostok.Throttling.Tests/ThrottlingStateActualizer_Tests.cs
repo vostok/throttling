@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 using Vostok.Commons.Threading;

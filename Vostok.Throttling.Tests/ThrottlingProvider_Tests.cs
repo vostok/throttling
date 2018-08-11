@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentAssertions.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 using Vostok.Commons.Threading;

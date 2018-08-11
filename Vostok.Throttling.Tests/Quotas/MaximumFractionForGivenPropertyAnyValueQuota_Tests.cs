@@ -23,7 +23,7 @@ namespace Vostok.Throttling.Tests.Quotas
         {
             Action action = () => quota = new MaximumFractionForGivenPropertyAnyValueQuota(key, -0.01);
 
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            action.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
         [Test]
@@ -31,7 +31,7 @@ namespace Vostok.Throttling.Tests.Quotas
         {
             Action action = () => quota = new MaximumFractionForGivenPropertyAnyValueQuota(null, 0.5);
 
-            action.Should().Throw<ArgumentNullException>();
+            action.ShouldThrow<ArgumentNullException>();
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace Vostok.Throttling.Tests.Quotas
         {
             Action action = () => quota = new MaximumFractionForGivenPropertyAnyValueQuota(key, 1.01);
 
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            action.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
         [Test]
