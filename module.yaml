@@ -9,7 +9,9 @@ notests *default:
     - Vostok.Throttling/bin/Release/netstandard2.0/Vostok.Throttling.dll
 
   deps:
+    - vostok.commons.threading
     - vostok.devtools
+    - vostok.commons.helpers
 
 full-build > notests:
   build:
