@@ -13,7 +13,7 @@ namespace Vostok.Throttling.Tests
         {
             try
             {
-                actual.Should().BeEquivalentTo(expected);
+                actual.ShouldBeEquivalentTo(expected);
                 return true;
             }
             catch

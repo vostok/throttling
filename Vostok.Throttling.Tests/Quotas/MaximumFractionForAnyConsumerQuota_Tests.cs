@@ -21,7 +21,7 @@ namespace Vostok.Throttling.Tests.Quotas
         {
             Action action = () => quota = new MaximumFractionForAnyConsumerQuota(-0.01);
 
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            action.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace Vostok.Throttling.Tests.Quotas
         {
             Action action = () => quota = new MaximumFractionForAnyConsumerQuota(1.01);
 
-            action.Should().Throw<ArgumentOutOfRangeException>();
+            action.ShouldThrow<ArgumentOutOfRangeException>();
         }
 
         [Test]

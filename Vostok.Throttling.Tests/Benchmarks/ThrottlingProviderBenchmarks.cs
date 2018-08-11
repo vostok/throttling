@@ -2,7 +2,7 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess;
-using FluentAssertions.Extensions;
+using FluentAssertions;
 using NUnit.Framework;
 using Vostok.Throttling.Quotas;
 
