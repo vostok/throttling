@@ -17,3 +17,5 @@ full-build > notests:
   build:
     target: Vostok.Throttling.sln
     configuration: Release
+  deps:
+    - vostok.commons.testing
