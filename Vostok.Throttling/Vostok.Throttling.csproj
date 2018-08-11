@@ -1,34 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  
   <Import Project="..\..\vostok.devtools\library-common-props\Main-Project.props" />
   <Import Project="..\..\vostok.devtools\git-commit-to-assembly-title\Vostok.Tools.GitCommit2AssemblyTitle.props" />
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Configurations>Debug;Release</Configurations>
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-
   <PropertyGroup>
     <VersionPrefix>0.0.1</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionSuffix>
+    </VersionSuffix>
   </PropertyGroup>
-
   <PropertyGroup>
     <PackageReleaseNotes>TODO</PackageReleaseNotes>
   </PropertyGroup>
-
   <PropertyGroup>
     <Title>TODO</Title>
     <Description>TODO</Description>
   </PropertyGroup>
-
   <PropertyGroup>
     <PackageProjectUrl>TODO</PackageProjectUrl>
     <PackageLicenseUrl>TODO</PackageLicenseUrl>
     <PackageTags>vostok</PackageTags>
     <RepositoryUrl>TODO</RepositoryUrl>
   </PropertyGroup>
-  
+  <ItemGroup>
+    <Compile Include="..\..\vostok.commons.threading\Vostok.Commons.Threading\AtomicInt.cs" Link="Commons\AtomicInt.cs" />
+    <Compile Include="..\..\vostok.commons.threading\Vostok.Commons.Threading\ThreadSafeRandom.cs" Link="Commons\ThreadSafeRandom.cs" />
+    <Compile Include="..\..\vostok.commons.helpers\Vostok.Commons.Helpers\Extensions\TimeSpanExtensions.cs" Link="Commons\TimeSpanExtensions.cs" />
+    <Compile Include="..\..\vostok.commons.helpers\Vostok.Commons.Helpers\Conversions\TimeConversionExtensions.cs" Link="Commons\TimeConversionExtensions.cs" />
+  </ItemGroup>
 </Project>
