@@ -16,14 +16,14 @@
     <PackageReleaseNotes>TODO</PackageReleaseNotes>
   </PropertyGroup>
   <PropertyGroup>
-    <Title>TODO</Title>
-    <Description>TODO</Description>
+    <Title>Vostok throttling library</Title>
+    <Description>Vostok throttling library</Description>
   </PropertyGroup>
   <PropertyGroup>
-    <PackageProjectUrl>TODO</PackageProjectUrl>
-    <PackageLicenseUrl>TODO</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/vostok/throttling</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/vostok/throttling/blob/master/LICENCE</PackageLicenseUrl>
     <PackageTags>vostok</PackageTags>
-    <RepositoryUrl>TODO</RepositoryUrl>
+    <RepositoryUrl>https://github.com/vostok/throttling</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\vostok.commons.threading\Vostok.Commons.Threading\AtomicInt.cs" Link="Commons\AtomicInt.cs" />
