@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using Vostok.Commons.Threading;
 
@@ -25,14 +26,10 @@ namespace Vostok.Throttling.Results
 
         public void Dispose()
         {
-            Interlocked.Exchange(ref semaphore, null)?.Release();
-
-            var currentCounters = Interlocked.Exchange(ref counters, null);
-            if (currentCounters == null)
-                return;
-
-            foreach (var counter in currentCounters)
+            foreach (var counter in Interlocked.Exchange(ref counters, null) ?? Enumerable.Empty<AtomicInt>())
                 counter.Decrement();
+
+            Interlocked.Exchange(ref semaphore, null)?.Release();
         }
     }
 }
