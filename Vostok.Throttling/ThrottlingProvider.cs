@@ -23,7 +23,8 @@ namespace Vostok.Throttling
         private static readonly IReadOnlyDictionary<string, int> EmptyConsumption = new Dictionary<string, int>();
 
         private readonly IThrottlingStateProvider stateProvider;
-        private readonly BroadcastObservable<IThrottlingEvent> observable;
+        private readonly BroadcastObservable<IThrottlingEvent> eventsObservable;
+        private readonly BroadcastObservable<IThrottlingResult> resultsObservable;
         private readonly Action<Exception> errorCallback;
 
         public ThrottlingProvider([NotNull] ThrottlingConfiguration configuration)
@@ -36,7 +37,8 @@ namespace Vostok.Throttling
             this.stateProvider = stateProvider;
             this.errorCallback = errorCallback;
 
-            observable = new BroadcastObservable<IThrottlingEvent>();
+            eventsObservable = new BroadcastObservable<IThrottlingEvent>();
+            resultsObservable = new BroadcastObservable<IThrottlingResult>();
         }
 
         public async Task<IThrottlingResult> ThrottleAsync(IReadOnlyDictionary<string, string> properties, TimeSpan? deadline)
@@ -45,35 +47,20 @@ namespace Vostok.Throttling
 
             var state = stateProvider.ObtainState();
 
+            PublishEventIfNeeded(state, properties);
+
             var result = await ThrottleInternalAsync(state, properties, deadline).ConfigureAwait(false);
 
-            ProduceEventIfNeeded(state, result, properties);
+            PublishResultIfNeeded(state, result);
 
             return result;
         }
 
-        private Task<IThrottlingResult> ThrottleInternalAsync(ThrottlingState state, IReadOnlyDictionary<string, string> properties, TimeSpan? deadline)
-        {
-            var result = CheckEnabled(state);
-            if (result != null)
-                return Task.FromResult(result);
-
-            if ((result = CheckQueueLimit(state)) != null)
-                return Task.FromResult(result);
-
-            if ((result = CheckQuotas(state, properties, null)) != null)
-                return Task.FromResult(result);
-
-            var counters = BuildCounters(state, properties);
-
-            if ((result = TryAcquireImmediately(state, counters, out var waitTask)) != null)
-                return Task.FromResult(result);
-
-            return ThrottleWithWaitingAsync(state, counters, waitTask, properties, deadline);
-        }
-
         public IDisposable Subscribe(IObserver<IThrottlingEvent> observer) =>
-            observable.Subscribe(observer);
+            eventsObservable.Subscribe(observer);
+
+        public IDisposable Subscribe(IObserver<IThrottlingResult> observer) =>
+            resultsObservable.Subscribe(observer);
 
         [CanBeNull]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -119,7 +106,7 @@ namespace Vostok.Throttling
 
             foreach (var pair in properties)
                 counters[countersIndex++] = state.ObtainCounter(pair.Key, pair.Value);
-            
+
             return counters;
         }
 
@@ -142,6 +129,26 @@ namespace Vostok.Throttling
             IncrementCounters(counters);
 
             return new PassedResult(state.Semaphore, counters, TimeSpan.Zero);
+        }
+
+        private Task<IThrottlingResult> ThrottleInternalAsync(ThrottlingState state, IReadOnlyDictionary<string, string> properties, TimeSpan? deadline)
+        {
+            var result = CheckEnabled(state);
+            if (result != null)
+                return Task.FromResult(result);
+
+            if ((result = CheckQueueLimit(state)) != null)
+                return Task.FromResult(result);
+
+            if ((result = CheckQuotas(state, properties, null)) != null)
+                return Task.FromResult(result);
+
+            var counters = BuildCounters(state, properties);
+
+            if ((result = TryAcquireImmediately(state, counters, out var waitTask)) != null)
+                return Task.FromResult(result);
+
+            return ThrottleWithWaitingAsync(state, counters, waitTask, properties, deadline);
         }
 
         private static async Task<IThrottlingResult> ThrottleWithWaitingAsync(
@@ -174,33 +181,6 @@ namespace Vostok.Throttling
             return new PassedResult(state.Semaphore, counters, waitTime);
         }
 
-        private void ProduceEventIfNeeded(ThrottlingState state, IThrottlingResult result, IReadOnlyDictionary<string, string> properties)
-        {
-            if (!observable.HasObservers || !state.Enabled)
-                return;
-
-            var evt = new ThrottlingEvent
-            {
-                Status = result.Status,
-                WaitTime = result.WaitTime,
-                Properties = properties,
-                CapacityLimit = state.CapacityLimit,
-                CapacityConsumed = Math.Max(0, state.CapacityLimit - state.Semaphore.CurrentCount),
-                QueueLimit = state.QueueLimit,
-                QueueSize = state.Semaphore.CurrentQueue,
-                PropertyConsumption = CaptureConsumption(state, properties),
-            };
-
-            try
-            {
-                observable.Push(evt);
-            }
-            catch (Exception error)
-            {
-                errorCallback?.Invoke(error);
-            }
-        }
-
         private static IReadOnlyDictionary<string, int> CaptureConsumption(ThrottlingState state, IReadOnlyDictionary<string, string> properties)
         {
             if (properties.Count == 0)
@@ -212,6 +192,46 @@ namespace Vostok.Throttling
                 pairs.Add(new KeyValuePair<string, int>(pair.Key, state.GetConsumption(pair.Key, pair.Value)));
 
             return new ReadonlyListDictionary<string, int>(pairs, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private void PublishEventIfNeeded(ThrottlingState state, IReadOnlyDictionary<string, string> properties)
+        {
+            if (!eventsObservable.HasObservers || !state.Enabled)
+                return;
+
+            var evt = new ThrottlingEvent
+            {
+                Properties = properties,
+                CapacityLimit = state.CapacityLimit,
+                CapacityConsumed = Math.Max(0, state.CapacityLimit - state.Semaphore.CurrentCount),
+                QueueLimit = state.QueueLimit,
+                QueueSize = state.Semaphore.CurrentQueue,
+                PropertyConsumption = CaptureConsumption(state, properties)
+            };
+
+            try
+            {
+                eventsObservable.Push(evt);
+            }
+            catch (Exception error)
+            {
+                errorCallback?.Invoke(error);
+            }
+        }
+
+        private void PublishResultIfNeeded(ThrottlingState state, IThrottlingResult result)
+        {
+            if (!resultsObservable.HasObservers || !state.Enabled)
+                return;
+
+            try
+            {
+                resultsObservable.Push(result);
+            }
+            catch (Exception error)
+            {
+                errorCallback?.Invoke(error);
+            }
         }
     }
 }

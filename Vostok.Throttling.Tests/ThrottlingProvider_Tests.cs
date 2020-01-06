@@ -27,6 +27,7 @@ namespace Vostok.Throttling.Tests
 
         private Dictionary<string, string> properties;
         private List<IThrottlingEvent> events;
+        private List<IThrottlingResult> results;
         private Action<Exception> errorCallback;
 
         [SetUp]
@@ -57,8 +58,10 @@ namespace Vostok.Throttling.Tests
 
             properties = new Dictionary<string, string> { ["foo"] = "bar" };
             events = new List<IThrottlingEvent>();
+            results = new List<IThrottlingResult>();
 
-            provider.Subscribe(new TestObserver(evt => events.Add(evt)));
+            provider.Subscribe(new TestObserver<IThrottlingEvent>(evt => events.Add(evt)));
+            provider.Subscribe(new TestObserver<IThrottlingResult>(res => results.Add(res)));
         }
 
         [Test]
@@ -300,68 +303,91 @@ namespace Vostok.Throttling.Tests
         }
 
         [Test]
-        public void ThrottleAsync_should_produce_an_event_upon_instant_success()
-        {
-            Throttle().Status.Should().Be(ThrottlingStatus.Passed);
-
-            var evt = events.Should().ContainSingle().Which;
-
-            evt.CapacityLimit.Should().Be(Capacity);
-            evt.CapacityConsumed.Should().Be(1);
-            evt.QueueLimit.Should().Be(QueueLimit);
-            evt.QueueSize.Should().Be(0);
-            evt.Properties.Should().BeSameAs(properties);
-            evt.PropertyConsumption["foo"].Should().Be(1);
-        }
-
-        [Test]
-        public void ThrottleAsync_should_produce_an_event_upon_delayed_success()
-        {
-            Throttle();
-            Throttle();
-            Throttle();
-            Throttle();
-            var lastResult = Throttle();
-
-            events.Clear();
-
-            var waitTask = ThrottleAsync();
-
-            lastResult.Dispose();
-
-            waitTask.GetAwaiter().GetResult().Status.Should().Be(ThrottlingStatus.Passed);
-
-            var evt = events.Should().ContainSingle().Which;
-
-            evt.CapacityLimit.Should().Be(Capacity);
-            evt.CapacityConsumed.Should().Be(Capacity);
-            evt.QueueLimit.Should().Be(QueueLimit);
-            evt.QueueSize.Should().Be(0);
-            evt.Properties.Should().BeSameAs(properties);
-            evt.PropertyConsumption["foo"].Should().Be(Capacity);
-        }
-
-        [Test]
-        public void ThrottleAsync_should_produce_an_event_upon_queue_failure()
+        public void ThrottleAsync_should_produce_an_event_before_each_throttling_operation()
         {
             for (var i = 0; i < Capacity; i++)
+            {
+                events.Clear();
+
                 Throttle();
 
+                var evt = events.Should().ContainSingle().Which;
+
+                evt.CapacityLimit.Should().Be(Capacity);
+                evt.CapacityConsumed.Should().Be(i);
+                evt.QueueLimit.Should().Be(QueueLimit);
+                evt.QueueSize.Should().Be(0);
+                evt.Properties.Should().BeSameAs(properties);
+            }
+
             for (var i = 0; i < QueueLimit; i++)
+            {
+                events.Clear();
+
                 ThrottleAsync();
 
-            events.Clear();
+                var evt = events.Should().ContainSingle().Which;
 
-            Throttle().Status.Should().Be(ThrottlingStatus.RejectedDueToQueue);
+                evt.CapacityLimit.Should().Be(Capacity);
+                evt.CapacityConsumed.Should().Be(Capacity);
+                evt.QueueLimit.Should().Be(QueueLimit);
+                evt.QueueSize.Should().Be(i);
+                evt.Properties.Should().BeSameAs(properties);
+                evt.PropertyConsumption["foo"].Should().Be(Capacity);
+            }
 
-            var evt = events.Should().ContainSingle().Which;
+            for (var i = 0; i < 10; i++)
+            {
+                events.Clear();
 
-            evt.CapacityLimit.Should().Be(Capacity);
-            evt.CapacityConsumed.Should().Be(Capacity);
-            evt.QueueLimit.Should().Be(QueueLimit);
-            evt.QueueSize.Should().Be(QueueLimit);
-            evt.Properties.Should().BeSameAs(properties);
-            evt.PropertyConsumption["foo"].Should().Be(Capacity);
+                ThrottleAsync();
+
+                var evt = events.Should().ContainSingle().Which;
+
+                evt.CapacityLimit.Should().Be(Capacity);
+                evt.CapacityConsumed.Should().Be(Capacity);
+                evt.QueueLimit.Should().Be(QueueLimit);
+                evt.QueueSize.Should().Be(QueueLimit);
+                evt.Properties.Should().BeSameAs(properties);
+                evt.PropertyConsumption["foo"].Should().Be(Capacity);
+            }
+        }
+
+        [Test]
+        public void ThrottleAsync_should_produce_a_result_after_each_throttling_operation()
+        {
+            for (var i = 0; i < Capacity; i++)
+            {
+                results.Clear();
+
+                Throttle();
+
+                var result = results.Should().ContainSingle().Which;
+
+                result.Status.Should().Be(ThrottlingStatus.Passed);
+                result.WaitTime.Should().Be(TimeSpan.Zero);
+            }
+
+            for (var i = 0; i < QueueLimit; i++)
+            {
+                results.Clear();
+
+                ThrottleAsync();
+
+                results.Should().BeEmpty();
+            }
+
+            for (var i = 0; i < 10; i++)
+            {
+                results.Clear();
+
+                ThrottleAsync();
+
+                var result = results.Should().ContainSingle().Which;
+
+                result.Status.Should().Be(ThrottlingStatus.RejectedDueToQueue);
+                result.WaitTime.Should().Be(TimeSpan.Zero);
+            }
         }
 
         [Test]
@@ -369,11 +395,12 @@ namespace Vostok.Throttling.Tests
         {
             var error = new Exception();
 
-            provider.Subscribe(new TestObserver(_ => throw error));
+            provider.Subscribe(new TestObserver<IThrottlingEvent>(_ => throw error));
+            provider.Subscribe(new TestObserver<IThrottlingResult>(_ => throw error));
 
             Throttle();
 
-            errorCallback.Received(1).Invoke(error);
+            errorCallback.Received(2).Invoke(error);
         }
 
         private IThrottlingResult Throttle(TimeSpan? deadline = null)
@@ -414,11 +441,11 @@ namespace Vostok.Throttling.Tests
             }
         }
 
-        private class TestObserver : IObserver<IThrottlingEvent>
+        private class TestObserver<T> : IObserver<T>
         {
-            private readonly Action<IThrottlingEvent> action;
+            private readonly Action<T> action;
 
-            public TestObserver(Action<IThrottlingEvent> action)
+            public TestObserver(Action<T> action)
                 => this.action = action;
 
             public void OnCompleted()
@@ -429,7 +456,7 @@ namespace Vostok.Throttling.Tests
             {
             }
 
-            public void OnNext(IThrottlingEvent value)
+            public void OnNext(T value)
                 => action(value);
         }
     }

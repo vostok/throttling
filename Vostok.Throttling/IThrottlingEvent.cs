@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using Vostok.Throttling.Config;
 
@@ -9,20 +8,11 @@ namespace Vostok.Throttling
     /// <para>An instance of <see cref="IThrottlingEvent"/> provides detailed information about a single <see cref="IThrottlingProvider.ThrottleAsync"/> operation.</para>
     /// <para>Subscribe to the observable implemented by <see cref="IThrottlingProvider"/> to receive such events.</para>
     /// <para>Snapshot consistency of numeric properties (limits and consumption) is not guaranteed.</para>
+    /// <para>Events are always produced at the start of the throttling operation, however long it may be.</para>
     /// </summary>
     [PublicAPI]
     public interface IThrottlingEvent
     {
-        /// <summary>
-        /// See <see cref="IThrottlingResult.Status"/>.
-        /// </summary>
-        ThrottlingStatus Status { get; }
-
-        /// <summary>
-        /// See <see cref="IThrottlingResult.WaitTime"/>.
-        /// </summary>
-        TimeSpan WaitTime { get; }
-
         /// <summary>
         /// See <see cref="ThrottlingEssentials.CapacityLimit"/>.
         /// </summary>

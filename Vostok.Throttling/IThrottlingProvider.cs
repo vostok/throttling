@@ -11,7 +11,7 @@ namespace Vostok.Throttling
     /// <para>Supports quoting and queueing.</para>
     /// </summary>
     [PublicAPI]
-    public interface IThrottlingProvider : IObservable<IThrottlingEvent>
+    public interface IThrottlingProvider : IObservable<IThrottlingEvent>, IObservable<IThrottlingResult>
     {
         /// <summary>
         /// <para>Attempts to determine whether a request with given <paramref name="properties"/> and <paramref name="deadline"/> can be executed with configured parallelism limits.</para>
