@@ -41,14 +41,14 @@ namespace Vostok.Throttling
 
         private int ComputeCapacityLimit(ThrottlingEssentials essentials)
         {
+            if (essentials.CapacityLimit.HasValue)
+                return Math.Max(1, essentials.CapacityLimit.Value);
+
             if (essentials.CapacityLimitPerCore.HasValue)
             {
                 var numberOfCores = configuration.NumberOfCoresProvider?.Invoke() ?? Environment.ProcessorCount;
                 return Math.Max(1, essentials.CapacityLimitPerCore.Value * numberOfCores);
             }
-
-            if (essentials.CapacityLimit.HasValue)
-                return Math.Max(1, essentials.CapacityLimit.Value);
 
             return int.MaxValue;
         }
