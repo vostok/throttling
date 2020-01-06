@@ -15,15 +15,15 @@ namespace Vostok.Throttling.Quotas
     {
         private static volatile Tuple<DateTime, int> cache;
 
-        private readonly Func<int> allowedSecondsInExhaustion;
+        private readonly Func<ThreadPoolOverloadQuotaOptions> options;
 
-        public ThreadPoolOverloadQuota(int allowedSecondsInExhaustion)
-            : this(() => allowedSecondsInExhaustion)
+        public ThreadPoolOverloadQuota([NotNull] ThreadPoolOverloadQuotaOptions options)
+            : this(() => options)
         {
         }
 
-        public ThreadPoolOverloadQuota([NotNull] Func<int> allowedSecondsInExhaustion)
-            => this.allowedSecondsInExhaustion = allowedSecondsInExhaustion ?? throw new ArgumentNullException(nameof(allowedSecondsInExhaustion));
+        public ThreadPoolOverloadQuota([NotNull] Func<ThreadPoolOverloadQuotaOptions> options)
+            => this.options = options ?? throw new ArgumentNullException(nameof(options));
 
         public ThrottlingQuotaVerdict Check(IReadOnlyDictionary<string, string> properties, IThrottlingQuotaContext context)
         {
@@ -42,7 +42,7 @@ namespace Vostok.Throttling.Quotas
             }
 
             var exhaustedDuration = cache.Item2;
-            var allowedDuration = allowedSecondsInExhaustion();
+            var allowedDuration = options().AllowedSecondsInExhaustion;
 
             return exhaustedDuration < allowedDuration
                 ? ThrottlingQuotaVerdict.Allow()
