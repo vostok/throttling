@@ -23,7 +23,6 @@ namespace Vostok.Throttling.Tests
             {
                 Enabled = true,
                 CapacityLimitPerCore = 10,
-                CapacityLimit = 250,
                 QueueLimit = 123,
                 RefreshPeriod = 1.Seconds()
             };
@@ -85,7 +84,6 @@ namespace Vostok.Throttling.Tests
         public void Should_update_capacity_per_core_with_custom_cores_count()
         {
             essentials.CapacityLimitPerCore = 12;
-            essentials.CapacityLimit = 50;
 
             builder.SetNumberOfCores(5);
 
@@ -98,7 +96,6 @@ namespace Vostok.Throttling.Tests
         public void Should_update_capacity_per_core_with_default_cores_count()
         {
             essentials.CapacityLimitPerCore = 12;
-            essentials.CapacityLimit = 50;
 
             Actualize();
 
@@ -109,6 +106,18 @@ namespace Vostok.Throttling.Tests
         public void Should_update_capacity_from_absolute_value()
         {
             essentials.CapacityLimitPerCore = null;
+            essentials.CapacityLimit = 122;
+
+            Actualize();
+
+            state.CapacityLimit.Should().Be(essentials.CapacityLimit);
+        }
+
+
+        [Test]
+        public void Should_give_priority_to_absolute_value_of_capacity()
+        {
+            essentials.CapacityLimitPerCore = 1;
             essentials.CapacityLimit = 122;
 
             Actualize();
