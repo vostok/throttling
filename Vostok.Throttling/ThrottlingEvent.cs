@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 // ReSharper disable NotNullMemberIsNotInitialized
 
@@ -7,10 +6,6 @@ namespace Vostok.Throttling
 {
     internal class ThrottlingEvent : IThrottlingEvent
     {
-        public ThrottlingStatus Status { get; set; }
-
-        public TimeSpan WaitTime { get; set; }
-
         public int CapacityLimit { get; set; }
         
         public int CapacityConsumed { get; set; }
