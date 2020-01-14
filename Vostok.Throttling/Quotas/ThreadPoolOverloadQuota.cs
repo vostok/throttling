@@ -13,7 +13,7 @@ namespace Vostok.Throttling.Quotas
     [PublicAPI]
     public class ThreadPoolOverloadQuota : IThrottlingQuota
     {
-        private static volatile Tuple<DateTime, int> cache;
+        private static volatile Tuple<DateTime, int> cache = Tuple.Create(DateTime.MinValue, 0);
 
         private readonly Func<ThreadPoolOverloadQuotaOptions> options;
 
