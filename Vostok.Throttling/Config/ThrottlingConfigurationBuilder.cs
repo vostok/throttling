@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Vostok.Throttling.Quotas;
+// ReSharper disable ParameterHidesMember
 
 namespace Vostok.Throttling.Config
 {
@@ -14,6 +15,7 @@ namespace Vostok.Throttling.Config
         private Func<int> numberOfCoresProvider;
         private Dictionary<string, Func<PropertyQuotaOptions>> propertyQuotas;
         private List<IThrottlingQuota> customQuotas;
+        private Action<Exception> errorCallback;
 
         public ThrottlingConfigurationBuilder()
         {
@@ -24,7 +26,11 @@ namespace Vostok.Throttling.Config
 
         [NotNull]
         public ThrottlingConfiguration Build()
-            => new ThrottlingConfiguration(essentialsProvider, propertyQuotas, customQuotas) {NumberOfCoresProvider = numberOfCoresProvider};
+            => new ThrottlingConfiguration(essentialsProvider, propertyQuotas, customQuotas)
+            {
+                NumberOfCoresProvider = numberOfCoresProvider,
+                ErrorCallback = errorCallback
+            };
 
         [NotNull]
         public ThrottlingConfigurationBuilder SetEssentials([NotNull] ThrottlingEssentials essentials)
@@ -111,6 +117,13 @@ namespace Vostok.Throttling.Config
         public ThrottlingConfigurationBuilder SetNumberOfCores(int numberOfCores)
         {
             numberOfCoresProvider = () => numberOfCores;
+            return this;
+        }
+
+        [NotNull]
+        public ThrottlingConfigurationBuilder SetErrorCallback(Action<Exception> errorCallback)
+        {
+            this.errorCallback = errorCallback;
             return this;
         }
     }
