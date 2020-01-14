@@ -39,7 +39,7 @@ namespace Vostok.Throttling.Config
         public IReadOnlyDictionary<string, Func<PropertyQuotaOptions>> PropertyQuotas { get; }
 
         /// <summary>
-        /// <para>A list of custom user-provided qouta implementations.</para>
+        /// <para>A list of custom user-provided quota implementations.</para>
         /// <para>May be empty.</para>
         /// </summary>
         [NotNull]
