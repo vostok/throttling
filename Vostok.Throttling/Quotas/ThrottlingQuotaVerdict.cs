@@ -5,6 +5,11 @@ namespace Vostok.Throttling.Quotas
     [PublicAPI]
     public struct ThrottlingQuotaVerdict
     {
+        public readonly bool Allowed;
+
+        [CanBeNull]
+        public readonly string RejectionReason;
+
         private ThrottlingQuotaVerdict(bool allowed, string rejectionReason)
         {
             Allowed = allowed;
@@ -16,10 +21,5 @@ namespace Vostok.Throttling.Quotas
 
         public static ThrottlingQuotaVerdict Reject([CanBeNull] string reason)
             => new ThrottlingQuotaVerdict(false, reason);
-
-        public readonly bool Allowed;
-
-        [CanBeNull]
-        public readonly string RejectionReason;
     }
 }

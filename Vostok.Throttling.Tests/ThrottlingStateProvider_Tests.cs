@@ -20,7 +20,7 @@ namespace Vostok.Throttling.Tests
         [SetUp]
         public void TestSetup()
         {
-            essentials = new ThrottlingEssentials { RefreshPeriod = TimeSpan.Zero };
+            essentials = new ThrottlingEssentials {RefreshPeriod = TimeSpan.Zero};
 
             configuration = new ThrottlingConfigurationBuilder()
                 .SetEssentials(() => essentials)

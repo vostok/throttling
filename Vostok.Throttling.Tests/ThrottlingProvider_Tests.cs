@@ -56,7 +56,7 @@ namespace Vostok.Throttling.Tests
             errorCallback = Substitute.For<Action<Exception>>();
             provider = new ThrottlingProvider(stateProvider, errorCallback);
 
-            properties = new Dictionary<string, string> { ["foo"] = "bar" };
+            properties = new Dictionary<string, string> {["foo"] = "bar"};
             events = new List<IThrottlingEvent>();
             results = new List<IThrottlingResult>();
 
@@ -272,7 +272,9 @@ namespace Vostok.Throttling.Tests
 
             state.Semaphore.Release();
 
-            using (task.Result) { }
+            using (task.Result)
+            {
+            }
 
             VerifyThereAreNoSideEffects(1);
         }
@@ -415,7 +417,7 @@ namespace Vostok.Throttling.Tests
             Console.Out.WriteLine($"Rejection reason = {result.RejectionReason}");
 
             return result;
-        } 
+        }
 
         private void DrainSemaphore(int amount = Capacity)
         {

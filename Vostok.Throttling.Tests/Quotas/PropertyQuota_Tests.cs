@@ -165,12 +165,14 @@ namespace Vostok.Throttling.Tests.Quotas
         }
 
         private PropertyQuota CreateQuota()
-            => new PropertyQuota(property, new PropertyQuotaOptions
-            {
-                Blacklist = blacklist,
-                Whitelist = whitelist,
-                GlobalLimit = globalLimit,
-                IndividualLimits = individualLimits
-            });
+            => new PropertyQuota(
+                property,
+                new PropertyQuotaOptions
+                {
+                    Blacklist = blacklist,
+                    Whitelist = whitelist,
+                    GlobalLimit = globalLimit,
+                    IndividualLimits = individualLimits
+                });
     }
 }

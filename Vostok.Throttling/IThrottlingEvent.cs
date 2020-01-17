@@ -17,7 +17,7 @@ namespace Vostok.Throttling
         /// See <see cref="ThrottlingEssentials.CapacityLimit"/>.
         /// </summary>
         int CapacityLimit { get; }
-        
+
         /// <summary>
         /// Current capacity consumed by all in-flight requests in total.
         /// </summary>
@@ -27,7 +27,7 @@ namespace Vostok.Throttling
         /// See <see cref="ThrottlingEssentials.QueueLimit"/>.
         /// </summary>
         int QueueLimit { get; }
-        
+
         /// <summary>
         /// Current waiting queue size.
         /// </summary>
