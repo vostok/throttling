@@ -16,7 +16,7 @@ namespace Vostok.Throttling.Quotas
         public PropertyQuota([NotNull] string property, [NotNull] PropertyQuotaOptions options)
         {
             Property = property ?? throw new ArgumentNullException(nameof(property));
-            
+
             blacklist = new HashSet<string>(options.Blacklist ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
             whitelist = new HashSet<string>(options.Whitelist ?? Enumerable.Empty<string>(), StringComparer.OrdinalIgnoreCase);
             globalLimit = options.GlobalLimit ?? double.MaxValue;

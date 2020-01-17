@@ -102,7 +102,7 @@ namespace Vostok.Throttling.Tests.Results
 
         private PassedResult CreateResult()
         {
-            return new PassedResult(semaphore, new[] { consumerCounter, priorityCounter }, 1.Seconds());
+            return new PassedResult(semaphore, new[] {consumerCounter, priorityCounter}, 1.Seconds());
         }
     }
 }

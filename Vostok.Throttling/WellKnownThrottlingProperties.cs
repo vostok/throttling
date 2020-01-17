@@ -19,7 +19,7 @@ namespace Vostok.Throttling
         /// HTTP request method.
         /// </summary>
         public const string Method = "method";
-        
+
         /// <summary>
         /// HTTP request url.
         /// </summary>

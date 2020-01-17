@@ -13,7 +13,7 @@ namespace Vostok.Throttling.Results
         }
 
         public ThrottlingStatus Status { get; }
-        
+
         public TimeSpan WaitTime { get; }
 
         public string RejectionReason { get; }

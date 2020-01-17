@@ -29,6 +29,37 @@ namespace Vostok.Throttling
             state.IsActual = true;
         }
 
+        private static void CleanupCounters(ThrottlingState state)
+        {
+            foreach (var countersMap in state.Counters.Select(pair => pair.Value))
+            foreach (var pair in countersMap.Where(pair => pair.Value.Value == 0))
+            {
+                countersMap.TryRemove(pair.Key, out _);
+            }
+        }
+
+        private static void AdjustSemaphore(ThrottlingState state, int oldLimit)
+        {
+            var difference = state.CapacityLimit - oldLimit;
+            if (difference == 0)
+                return;
+
+            if (difference > 0)
+            {
+                state.Semaphore.Release(difference);
+            }
+            else
+            {
+                DrainSemaphore(state.Semaphore, -difference);
+            }
+        }
+
+        private static async Task DrainSemaphore(LifoSemaphore semaphore, int amount)
+        {
+            for (var i = 0; i < amount; i++)
+                await semaphore.WaitAsync().ConfigureAwait(false);
+        }
+
         private void UpdateEssentials(ThrottlingState state)
         {
             var newEssentials = configuration.Essentials();
@@ -67,37 +98,6 @@ namespace Vostok.Throttling
         {
             foreach (var pair in configuration.PropertyQuotas)
                 yield return new PropertyQuota(pair.Key, pair.Value());
-        }
-
-        private static void CleanupCounters(ThrottlingState state)
-        {
-            foreach (var countersMap in state.Counters.Select(pair => pair.Value))
-            foreach (var pair in countersMap.Where(pair => pair.Value.Value == 0))
-            {
-                countersMap.TryRemove(pair.Key, out _);
-            }
-        }
-
-        private static void AdjustSemaphore(ThrottlingState state, int oldLimit)
-        {
-            var difference = state.CapacityLimit - oldLimit;
-            if (difference == 0)
-                return;
-
-            if (difference > 0)
-            {
-                state.Semaphore.Release(difference);
-            }
-            else
-            {
-                DrainSemaphore(state.Semaphore, -difference);
-            }
-        }
-
-        private static async Task DrainSemaphore(LifoSemaphore semaphore, int amount)
-        {
-            for (var i = 0; i < amount; i++)
-                await semaphore.WaitAsync().ConfigureAwait(false);
         }
     }
 }

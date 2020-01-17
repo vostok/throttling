@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using Vostok.Throttling.Quotas;
+
 // ReSharper disable ParameterHidesMember
 
 namespace Vostok.Throttling.Config

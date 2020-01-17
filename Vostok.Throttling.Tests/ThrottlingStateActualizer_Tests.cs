@@ -113,7 +113,6 @@ namespace Vostok.Throttling.Tests
             state.CapacityLimit.Should().Be(essentials.CapacityLimit);
         }
 
-
         [Test]
         public void Should_give_priority_to_absolute_value_of_capacity()
         {

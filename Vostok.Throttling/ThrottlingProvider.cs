@@ -131,26 +131,6 @@ namespace Vostok.Throttling
             return new PassedResult(state.Semaphore, counters, TimeSpan.Zero);
         }
 
-        private Task<IThrottlingResult> ThrottleInternalAsync(ThrottlingState state, IReadOnlyDictionary<string, string> properties, TimeSpan? deadline)
-        {
-            var result = CheckEnabled(state);
-            if (result != null)
-                return Task.FromResult(result);
-
-            if ((result = CheckQueueLimit(state)) != null)
-                return Task.FromResult(result);
-
-            if ((result = CheckQuotas(state, properties, null)) != null)
-                return Task.FromResult(result);
-
-            var counters = BuildCounters(state, properties);
-
-            if ((result = TryAcquireImmediately(state, counters, out var waitTask)) != null)
-                return Task.FromResult(result);
-
-            return ThrottleWithWaitingAsync(state, counters, waitTask, properties, deadline);
-        }
-
         private static async Task<IThrottlingResult> ThrottleWithWaitingAsync(
             ThrottlingState state,
             AtomicInt[] counters,
@@ -192,6 +172,26 @@ namespace Vostok.Throttling
                 pairs.Add(new KeyValuePair<string, int>(pair.Key, state.GetConsumption(pair.Key, pair.Value)));
 
             return new ReadonlyListDictionary<string, int>(pairs, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private Task<IThrottlingResult> ThrottleInternalAsync(ThrottlingState state, IReadOnlyDictionary<string, string> properties, TimeSpan? deadline)
+        {
+            var result = CheckEnabled(state);
+            if (result != null)
+                return Task.FromResult(result);
+
+            if ((result = CheckQueueLimit(state)) != null)
+                return Task.FromResult(result);
+
+            if ((result = CheckQuotas(state, properties, null)) != null)
+                return Task.FromResult(result);
+
+            var counters = BuildCounters(state, properties);
+
+            if ((result = TryAcquireImmediately(state, counters, out var waitTask)) != null)
+                return Task.FromResult(result);
+
+            return ThrottleWithWaitingAsync(state, counters, waitTask, properties, deadline);
         }
 
         private void PublishEventIfNeeded(ThrottlingState state, IReadOnlyDictionary<string, string> properties)
