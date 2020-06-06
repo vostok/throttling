@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -40,6 +41,8 @@ namespace Vostok.Throttling
             eventsObservable = new BroadcastObservable<IThrottlingEvent>();
             resultsObservable = new BroadcastObservable<IThrottlingResult>();
         }
+
+        public ThrottlingInfo CurrentInfo => CaptureCurrentInfo(stateProvider.ObtainState());
 
         public async Task<IThrottlingResult> ThrottleAsync(IReadOnlyDictionary<string, string> properties, TimeSpan? deadline)
         {
@@ -218,7 +221,7 @@ namespace Vostok.Throttling
                 errorCallback?.Invoke(error);
             }
         }
-
+      
         private void PublishResultIfNeeded(ThrottlingState state, IThrottlingResult result)
         {
             if (!resultsObservable.HasObservers || !state.Enabled)
@@ -233,5 +236,21 @@ namespace Vostok.Throttling
                 errorCallback?.Invoke(error);
             }
         }
+
+        private static ThrottlingInfo CaptureCurrentInfo(ThrottlingState state)
+            => new ThrottlingInfo
+            {
+                Enabled = state.Enabled,
+                CapacityLimit = state.CapacityLimit,
+                CapacityConsumed = Math.Max(0, state.CapacityLimit - state.Semaphore.CurrentCount),
+                QueueLimit = state.QueueLimit,
+                QueueSize = state.Semaphore.CurrentQueue,
+                PerPropertyConsumption = state.Counters.ToDictionary(
+                    pair => pair.Key, 
+                    pair => pair.Value
+                        .Select(p => (name: p.Key, count: p.Value.Value))
+                        .OrderByDescending(p => p.count)
+                        .ToDictionary(p => p.name, p => p.count))
+            };
     }
 }
