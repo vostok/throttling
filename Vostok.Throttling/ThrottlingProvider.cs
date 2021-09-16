@@ -38,8 +38,8 @@ namespace Vostok.Throttling
             this.stateProvider = stateProvider;
             this.errorCallback = errorCallback;
 
-            eventsObservable = new BroadcastObservable<IThrottlingEvent>();
-            resultsObservable = new BroadcastObservable<IThrottlingResult>();
+            eventsObservable = new BroadcastObservable<IThrottlingEvent>(errorCallback);
+            resultsObservable = new BroadcastObservable<IThrottlingResult>(errorCallback);
         }
 
         public ThrottlingInfo CurrentInfo => CaptureCurrentInfo(stateProvider.ObtainState());
@@ -212,14 +212,7 @@ namespace Vostok.Throttling
                 PropertyConsumption = CaptureConsumption(state, properties)
             };
 
-            try
-            {
-                eventsObservable.Push(evt);
-            }
-            catch (Exception error)
-            {
-                errorCallback?.Invoke(error);
-            }
+            eventsObservable.Push(evt);
         }
       
         private void PublishResultIfNeeded(ThrottlingState state, IThrottlingResult result)
@@ -227,14 +220,7 @@ namespace Vostok.Throttling
             if (!resultsObservable.HasObservers || !state.Enabled)
                 return;
 
-            try
-            {
-                resultsObservable.Push(result);
-            }
-            catch (Exception error)
-            {
-                errorCallback?.Invoke(error);
-            }
+            resultsObservable.Push(result);
         }
 
         private static ThrottlingInfo CaptureCurrentInfo(ThrottlingState state)
