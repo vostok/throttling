@@ -1,6 +1,6 @@
 # Vostok.Throttling
 
-[![Build status](https://ci.appveyor.com/api/projects/status/github/vostok/throttling?svg=true&branch=master)](https://ci.appveyor.com/project/vostok/throttling/branch/master)
+[![Build & Test & Publish](https://github.com/vostok/throttling/actions/workflows/ci.yml/badge.svg)](https://github.com/vostok/throttling/actions/workflows/ci.yml)
 [![NuGet](https://img.shields.io/nuget/v/Vostok.Throttling.svg)](https://www.nuget.org/packages/Vostok.Throttling)
 
 Request throttling helpers for HTTP services: parallelism limiting, quotas.
