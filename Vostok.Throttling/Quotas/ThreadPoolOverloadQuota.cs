@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using JetBrains.Annotations;
 using Vostok.Commons.Threading;
@@ -13,7 +14,7 @@ namespace Vostok.Throttling.Quotas
     [PublicAPI]
     public class ThreadPoolOverloadQuota : IThrottlingQuota
     {
-        private static volatile Tuple<DateTime, int, ThreadPoolState> cache = Tuple.Create(DateTime.MinValue, 0, default(ThreadPoolState));
+        private static volatile Tuple<DateTime, int, string> cache = Tuple.Create(DateTime.MinValue, 0, string.Empty);
 
         private readonly Func<ThreadPoolOverloadQuotaOptions> options;
 
@@ -34,20 +35,39 @@ namespace Vostok.Throttling.Quotas
             if ((currentTime - oldCache.Item1).TotalSeconds >= 1)
             {
                 var state = ThreadPoolUtility.GetPoolState();
-                var exhausted = state.UsedWorkerThreads >= state.MinWorkerThreads || state.UsedIocpThreads >= state.MinIocpThreads;
+                var usedWorkerThreadsExhausted = state.UsedWorkerThreads >= state.MinWorkerThreads;
+                var usedIocpThreadsExhausted = state.UsedIocpThreads >= state.MinIocpThreads;
+                var exhausted = usedWorkerThreadsExhausted || usedIocpThreadsExhausted;
                 var newSecondsInExhaustion = exhausted ? oldCache.Item2 + 1 : 0;
-                var newCache = Tuple.Create(currentTime, newSecondsInExhaustion, state);
+                var rejectReason = exhausted
+                    ? GetRejectReason(usedWorkerThreadsExhausted, usedIocpThreadsExhausted, newSecondsInExhaustion, state)
+                    : string.Empty;
+                var newCache = Tuple.Create(currentTime, newSecondsInExhaustion, rejectReason);
 
                 Interlocked.CompareExchange(ref cache, newCache, oldCache);
             }
 
             var exhaustedDuration = cache.Item2;
             var allowedDuration = options().AllowedSecondsInExhaustion;
-            var threadPoolState = cache.Item3;
+            var reason = cache.Item3;
 
             return exhaustedDuration < allowedDuration
                 ? ThrottlingQuotaVerdict.Allow()
-                : ThrottlingQuotaVerdict.Reject($"Thread pool has been exhausted for at least {exhaustedDuration.ToString()} seconds. ThreadPoolOverloadQuota statistic (UsedWorkerThreads:'{threadPoolState.UsedWorkerThreads.ToString()}' >= MinWorkerThreads: '{threadPoolState.MinWorkerThreads.ToString()}') or (UsedIocpThreads:'{threadPoolState.UsedIocpThreads.ToString()}' >= MinIocpThreads: '{threadPoolState.MinIocpThreads.ToString()}')");
+                : ThrottlingQuotaVerdict.Reject(reason);
+        }
+        
+        [NotNull]
+        private static string GetRejectReason(bool usedWorkerThreadsExhausted, bool usedIocpThreadsExhausted, int secondsInExhaustion, ThreadPoolState state)
+        {
+            var result = new StringBuilder($"Thread pool has been exhausted for at least {secondsInExhaustion.ToString()} seconds.");
+
+            if (usedWorkerThreadsExhausted)
+                result.Append($" UsedWorkerThreads exhausted. (UsedWorkerThreads:'{state.UsedWorkerThreads.ToString()}' >= MinWorkerThreads: '{state.MinWorkerThreads.ToString()}').");
+
+            if (usedIocpThreadsExhausted)
+                result.Append($" UsedIocpThreads exhausted. (UsedIocpThreads:'{state.UsedIocpThreads.ToString()}' >= MinIocpThreads: '{state.MinIocpThreads.ToString()}').");
+            
+            return result.ToString();
         }
     }
 }
