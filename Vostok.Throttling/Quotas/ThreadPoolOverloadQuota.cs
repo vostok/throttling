@@ -59,13 +59,13 @@ namespace Vostok.Throttling.Quotas
         [NotNull]
         private static string GetRejectReason(bool usedWorkerThreadsExhausted, bool usedIocpThreadsExhausted, int secondsInExhaustion, ThreadPoolState state)
         {
-            var result = new StringBuilder($"Thread pool has been exhausted for at least {secondsInExhaustion.ToString()} seconds.");
+            var result = new StringBuilder($"Thread pool has been exhausted for at least {secondsInExhaustion} seconds.");
 
             if (usedWorkerThreadsExhausted)
-                result.Append($" UsedWorkerThreads exhausted. (UsedWorkerThreads:'{state.UsedWorkerThreads.ToString()}' >= MinWorkerThreads: '{state.MinWorkerThreads.ToString()}').");
+                result.Append($" UsedWorkerThreads exhausted (UsedWorkerThreads: {state.UsedWorkerThreads} >= MinWorkerThreads: {state.MinWorkerThreads}).");
 
             if (usedIocpThreadsExhausted)
-                result.Append($" UsedIocpThreads exhausted. (UsedIocpThreads:'{state.UsedIocpThreads.ToString()}' >= MinIocpThreads: '{state.MinIocpThreads.ToString()}').");
+                result.Append($" UsedIocpThreads exhausted (UsedIocpThreads: {state.UsedIocpThreads} >= MinIocpThreads: {state.MinIocpThreads}).");
             
             return result.ToString();
         }
