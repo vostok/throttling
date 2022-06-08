@@ -1,3 +1,7 @@
+## 0.1.5 (08-06-2022):
+
+Log `ThreadPoolOverloadQuota` reject reason details.
+
 ## 0.1.4 (06-12-2021):
 
 Added `net6.0` target.
