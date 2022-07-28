@@ -1,0 +1,124 @@
+const Vostok.Throttling.WellKnownThrottlingProperties.Consumer = "consumer" -> string
+const Vostok.Throttling.WellKnownThrottlingProperties.Method = "method" -> string
+const Vostok.Throttling.WellKnownThrottlingProperties.Priority = "priority" -> string
+const Vostok.Throttling.WellKnownThrottlingProperties.Url = "url" -> string
+readonly Vostok.Throttling.Quotas.ThrottlingQuotaVerdict.Allowed -> bool
+readonly Vostok.Throttling.Quotas.ThrottlingQuotaVerdict.RejectionReason -> string
+static Vostok.Throttling.Quotas.ThrottlingQuotaVerdict.Allow() -> Vostok.Throttling.Quotas.ThrottlingQuotaVerdict
+static Vostok.Throttling.Quotas.ThrottlingQuotaVerdict.Reject(string reason) -> Vostok.Throttling.Quotas.ThrottlingQuotaVerdict
+Vostok.Throttling.Config.ThrottlingConfiguration
+Vostok.Throttling.Config.ThrottlingConfiguration.CustomQuotas.get -> System.Collections.Generic.IReadOnlyList<Vostok.Throttling.Quotas.IThrottlingQuota>
+Vostok.Throttling.Config.ThrottlingConfiguration.ErrorCallback.get -> System.Action<System.Exception>
+Vostok.Throttling.Config.ThrottlingConfiguration.ErrorCallback.set -> void
+Vostok.Throttling.Config.ThrottlingConfiguration.Essentials.get -> System.Func<Vostok.Throttling.Config.ThrottlingEssentials>
+Vostok.Throttling.Config.ThrottlingConfiguration.NumberOfCoresProvider.get -> System.Func<int>
+Vostok.Throttling.Config.ThrottlingConfiguration.NumberOfCoresProvider.set -> void
+Vostok.Throttling.Config.ThrottlingConfiguration.PropertyQuotas.get -> System.Collections.Generic.IReadOnlyDictionary<string, System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions>>
+Vostok.Throttling.Config.ThrottlingConfiguration.ThrottlingConfiguration(System.Func<Vostok.Throttling.Config.ThrottlingEssentials> essentials, System.Collections.Generic.IReadOnlyDictionary<string, System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions>> propertyQuotas, System.Collections.Generic.IReadOnlyList<Vostok.Throttling.Quotas.IThrottlingQuota> customQuotas) -> void
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.AddCustomQuota(Vostok.Throttling.Quotas.IThrottlingQuota quota) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.Build() -> Vostok.Throttling.Config.ThrottlingConfiguration
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetConsumerQuota(System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions> options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetConsumerQuota(Vostok.Throttling.Quotas.PropertyQuotaOptions options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetErrorCallback(System.Action<System.Exception> errorCallback) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetEssentials(System.Func<Vostok.Throttling.Config.ThrottlingEssentials> essentials) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetEssentials(Vostok.Throttling.Config.ThrottlingEssentials essentials) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetMethodQuota(System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions> options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetMethodQuota(Vostok.Throttling.Quotas.PropertyQuotaOptions options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetNumberOfCores(int numberOfCores) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetNumberOfCores(System.Func<int> numberOfCores) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetPriorityQuota(System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions> options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetPriorityQuota(Vostok.Throttling.Quotas.PropertyQuotaOptions options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetPropertyQuota(string propertyName, System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions> options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetPropertyQuota(string propertyName, Vostok.Throttling.Quotas.PropertyQuotaOptions options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetUrlQuota(System.Func<Vostok.Throttling.Quotas.PropertyQuotaOptions> options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.SetUrlQuota(Vostok.Throttling.Quotas.PropertyQuotaOptions options) -> Vostok.Throttling.Config.ThrottlingConfigurationBuilder
+Vostok.Throttling.Config.ThrottlingConfigurationBuilder.ThrottlingConfigurationBuilder() -> void
+Vostok.Throttling.Config.ThrottlingEssentials
+Vostok.Throttling.Config.ThrottlingEssentials.CapacityLimit.get -> int?
+Vostok.Throttling.Config.ThrottlingEssentials.CapacityLimit.set -> void
+Vostok.Throttling.Config.ThrottlingEssentials.CapacityLimitPerCore.get -> int?
+Vostok.Throttling.Config.ThrottlingEssentials.CapacityLimitPerCore.set -> void
+Vostok.Throttling.Config.ThrottlingEssentials.Enabled.get -> bool
+Vostok.Throttling.Config.ThrottlingEssentials.Enabled.set -> void
+Vostok.Throttling.Config.ThrottlingEssentials.QueueLimit.get -> int
+Vostok.Throttling.Config.ThrottlingEssentials.QueueLimit.set -> void
+Vostok.Throttling.Config.ThrottlingEssentials.RefreshPeriod.get -> System.TimeSpan
+Vostok.Throttling.Config.ThrottlingEssentials.RefreshPeriod.set -> void
+Vostok.Throttling.Config.ThrottlingEssentials.ThrottlingEssentials() -> void
+Vostok.Throttling.IThrottlingEvent
+Vostok.Throttling.IThrottlingEvent.CapacityConsumed.get -> int
+Vostok.Throttling.IThrottlingEvent.CapacityLimit.get -> int
+Vostok.Throttling.IThrottlingEvent.Properties.get -> System.Collections.Generic.IReadOnlyDictionary<string, string>
+Vostok.Throttling.IThrottlingEvent.PropertyConsumption.get -> System.Collections.Generic.IReadOnlyDictionary<string, int>
+Vostok.Throttling.IThrottlingEvent.QueueLimit.get -> int
+Vostok.Throttling.IThrottlingEvent.QueueSize.get -> int
+Vostok.Throttling.IThrottlingProvider
+Vostok.Throttling.IThrottlingProvider.ThrottleAsync(System.Collections.Generic.IReadOnlyDictionary<string, string> properties, System.TimeSpan? deadline) -> System.Threading.Tasks.Task<Vostok.Throttling.IThrottlingResult>
+Vostok.Throttling.IThrottlingResult
+Vostok.Throttling.IThrottlingResult.RejectionReason.get -> string
+Vostok.Throttling.IThrottlingResult.Status.get -> Vostok.Throttling.ThrottlingStatus
+Vostok.Throttling.IThrottlingResult.WaitTime.get -> System.TimeSpan
+Vostok.Throttling.Quotas.IThrottlingQuota
+Vostok.Throttling.Quotas.IThrottlingQuota.Check(System.Collections.Generic.IReadOnlyDictionary<string, string> properties, Vostok.Throttling.Quotas.IThrottlingQuotaContext context) -> Vostok.Throttling.Quotas.ThrottlingQuotaVerdict
+Vostok.Throttling.Quotas.IThrottlingQuotaContext
+Vostok.Throttling.Quotas.IThrottlingQuotaContext.CapacityLimit.get -> int
+Vostok.Throttling.Quotas.IThrottlingQuotaContext.GetConsumption(string property, string value) -> int
+Vostok.Throttling.Quotas.PropertyQuota
+Vostok.Throttling.Quotas.PropertyQuota.Check(System.Collections.Generic.IReadOnlyDictionary<string, string> properties, Vostok.Throttling.Quotas.IThrottlingQuotaContext context) -> Vostok.Throttling.Quotas.ThrottlingQuotaVerdict
+Vostok.Throttling.Quotas.PropertyQuota.Property.get -> string
+Vostok.Throttling.Quotas.PropertyQuota.PropertyQuota(string property, Vostok.Throttling.Quotas.PropertyQuotaOptions options) -> void
+Vostok.Throttling.Quotas.PropertyQuotaOptions
+Vostok.Throttling.Quotas.PropertyQuotaOptions.Blacklist.get -> System.Collections.Generic.IReadOnlyList<string>
+Vostok.Throttling.Quotas.PropertyQuotaOptions.Blacklist.set -> void
+Vostok.Throttling.Quotas.PropertyQuotaOptions.GlobalLimit.get -> double?
+Vostok.Throttling.Quotas.PropertyQuotaOptions.GlobalLimit.set -> void
+Vostok.Throttling.Quotas.PropertyQuotaOptions.IndividualLimits.get -> System.Collections.Generic.IReadOnlyDictionary<string, double>
+Vostok.Throttling.Quotas.PropertyQuotaOptions.IndividualLimits.set -> void
+Vostok.Throttling.Quotas.PropertyQuotaOptions.PropertyQuotaOptions() -> void
+Vostok.Throttling.Quotas.PropertyQuotaOptions.Whitelist.get -> System.Collections.Generic.IReadOnlyList<string>
+Vostok.Throttling.Quotas.PropertyQuotaOptions.Whitelist.set -> void
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuota
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuota.Check(System.Collections.Generic.IReadOnlyDictionary<string, string> properties, Vostok.Throttling.Quotas.IThrottlingQuotaContext context) -> Vostok.Throttling.Quotas.ThrottlingQuotaVerdict
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuota.ThreadPoolOverloadQuota(System.Func<Vostok.Throttling.Quotas.ThreadPoolOverloadQuotaOptions> options) -> void
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuota.ThreadPoolOverloadQuota(Vostok.Throttling.Quotas.ThreadPoolOverloadQuotaOptions options) -> void
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuotaOptions
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuotaOptions.AllowedSecondsInExhaustion.get -> int
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuotaOptions.AllowedSecondsInExhaustion.set -> void
+Vostok.Throttling.Quotas.ThreadPoolOverloadQuotaOptions.ThreadPoolOverloadQuotaOptions() -> void
+Vostok.Throttling.Quotas.ThrottlingQuotaVerdict
+Vostok.Throttling.Quotas.ThrottlingQuotaVerdict.ThrottlingQuotaVerdict() -> void
+Vostok.Throttling.ThrottlingInfo
+Vostok.Throttling.ThrottlingInfo.CapacityConsumed.get -> int
+Vostok.Throttling.ThrottlingInfo.CapacityConsumed.set -> void
+Vostok.Throttling.ThrottlingInfo.CapacityLimit.get -> int
+Vostok.Throttling.ThrottlingInfo.CapacityLimit.set -> void
+Vostok.Throttling.ThrottlingInfo.Enabled.get -> bool
+Vostok.Throttling.ThrottlingInfo.Enabled.set -> void
+Vostok.Throttling.ThrottlingInfo.PerPropertyConsumption.get -> System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int>>
+Vostok.Throttling.ThrottlingInfo.PerPropertyConsumption.set -> void
+Vostok.Throttling.ThrottlingInfo.QueueLimit.get -> int
+Vostok.Throttling.ThrottlingInfo.QueueLimit.set -> void
+Vostok.Throttling.ThrottlingInfo.QueueSize.get -> int
+Vostok.Throttling.ThrottlingInfo.QueueSize.set -> void
+Vostok.Throttling.ThrottlingInfo.ThrottlingInfo() -> void
+Vostok.Throttling.ThrottlingPropertiesBuilder
+Vostok.Throttling.ThrottlingPropertiesBuilder.AddConsumer(string consumer) -> Vostok.Throttling.ThrottlingPropertiesBuilder
+Vostok.Throttling.ThrottlingPropertiesBuilder.AddMethod(string method) -> Vostok.Throttling.ThrottlingPropertiesBuilder
+Vostok.Throttling.ThrottlingPropertiesBuilder.AddPriority(string priority) -> Vostok.Throttling.ThrottlingPropertiesBuilder
+Vostok.Throttling.ThrottlingPropertiesBuilder.AddProperty(string key, string value) -> Vostok.Throttling.ThrottlingPropertiesBuilder
+Vostok.Throttling.ThrottlingPropertiesBuilder.AddUrl(string url) -> Vostok.Throttling.ThrottlingPropertiesBuilder
+Vostok.Throttling.ThrottlingPropertiesBuilder.Build() -> System.Collections.Generic.IReadOnlyDictionary<string, string>
+Vostok.Throttling.ThrottlingPropertiesBuilder.ThrottlingPropertiesBuilder() -> void
+Vostok.Throttling.ThrottlingProvider
+Vostok.Throttling.ThrottlingProvider.CurrentInfo.get -> Vostok.Throttling.ThrottlingInfo
+Vostok.Throttling.ThrottlingProvider.Subscribe(System.IObserver<Vostok.Throttling.IThrottlingEvent> observer) -> System.IDisposable
+Vostok.Throttling.ThrottlingProvider.Subscribe(System.IObserver<Vostok.Throttling.IThrottlingResult> observer) -> System.IDisposable
+Vostok.Throttling.ThrottlingProvider.ThrottleAsync(System.Collections.Generic.IReadOnlyDictionary<string, string> properties, System.TimeSpan? deadline) -> System.Threading.Tasks.Task<Vostok.Throttling.IThrottlingResult>
+Vostok.Throttling.ThrottlingProvider.ThrottlingProvider(Vostok.Throttling.Config.ThrottlingConfiguration configuration) -> void
+Vostok.Throttling.ThrottlingStatus
+Vostok.Throttling.ThrottlingStatus.Passed = 0 -> Vostok.Throttling.ThrottlingStatus
+Vostok.Throttling.ThrottlingStatus.RejectedDueToDeadline = 1 -> Vostok.Throttling.ThrottlingStatus
+Vostok.Throttling.ThrottlingStatus.RejectedDueToQueue = 2 -> Vostok.Throttling.ThrottlingStatus
+Vostok.Throttling.ThrottlingStatus.RejectedDueToQuota = 3 -> Vostok.Throttling.ThrottlingStatus
+Vostok.Throttling.WellKnownThrottlingProperties
