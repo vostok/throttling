@@ -1,3 +1,7 @@
+## 0.1.6 (12-12-2024): 
+
+Bump NuGet deps versions
+
 ## 0.1.5 (08-06-2022):
 
 Log `ThreadPoolOverloadQuota` reject reason details.
