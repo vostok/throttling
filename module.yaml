@@ -7,6 +7,16 @@ notests *default:
 
   install:
     - Vostok.Throttling/bin/Release/netstandard2.0/Vostok.Throttling.dll
+    - groups:
+        - target-framework: "netstandard2.0"
+          libraries:
+            - Vostok.Throttling/bin/Release/netstandard2.0/Vostok.Throttling.dll
+        - target-framework: "net6.0"
+          libraries:
+            - Vostok.Throttling/bin/Release/net6.0/Vostok.Throttling.dll
+        - target-framework: "net8.0"
+          libraries:
+            - Vostok.Throttling/bin/Release/net8.0/Vostok.Throttling.dll
 
   deps:
     - vostok.devtools
@@ -20,6 +30,21 @@ full-build > notests:
     - -vostok.devtools
     - vostok.devtools@with-net6.0
 
+  install:
+    - Vostok.Throttling/bin/Release/netstandard2.0/Vostok.Throttling.dll
+    - groups:
+        - target-framework: "netstandard2.0"
+          libraries:
+            - Vostok.Throttling/bin/Release/netstandard2.0/Vostok.Throttling.dll
+        - target-framework: "net6.0"
+          libraries:
+            - Vostok.Throttling/bin/Release/net6.0/Vostok.Throttling.dll
+        - target-framework: "net8.0"
+          libraries:
+            - Vostok.Throttling/bin/Release/net8.0/Vostok.Throttling.dll
+
   build:
     target: Vostok.Throttling.sln
     configuration: Release
+    tool:
+      name: dotnet
