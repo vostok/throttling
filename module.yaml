@@ -26,10 +26,6 @@ notests *default:
 
 
 full-build > notests:
-  deps:
-    - -vostok.devtools
-    - vostok.devtools@with-net6.0
-
   install:
     - Vostok.Throttling/bin/Release/netstandard2.0/Vostok.Throttling.dll
     - groups:
